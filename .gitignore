@@ -1,0 +1,39 @@
+class FunctionalInterface
+   def do_thing
+     raise "This is not implemented!"
+   end
+end
+
+class Herp < FunctionalInterface
+   def do_thing
+      puts "herp"
+   end
+end
+
+class Derp < FunctionalInterface
+  def do_thing
+    puts "derp"
+  end
+end
+
+class Blorp < FunctionalInterface
+  def do_some_other_thing
+     puts "whoops"
+  end
+end
+
+describe FunctionalInterface do
+	before :all do
+	  @implementations =
+	    ObjectSpace.each_object(Class)
+	      .select { |klass| klass < FunctionalInterface }
+	end
+
+	it "should enforce that the interface is implemented" do
+	  @implementations.each do |klass|
+	    entity = klass.new
+	    expect { entity.do_thing }.to not_raise
+	  end
+	end
+end
+
